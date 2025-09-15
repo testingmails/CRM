@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SALES
+  MARKETING
+}
+
+enum LeadStatus {
+  NEW
+  IN_PROGRESS
+  CLOSED
+}
+
+enum QuotationStatus {
+  PENDING
+  SENT
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  role         Role          @default(SALES)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  activityLogs ActivityLog[]
+
+  @@map("users")
+}
+
+model Lead {
+  id                String           @id @default(cuid())
+  rfq               String?
+  messageId         String
+  threadId          String
+  marketingUser     String
+  email             String
+  contactNo         String
+  companyName       String
+  body              String
+  subject           String
+  website           String?
+  threadLinks       Json?
+  date              DateTime
+  country           String
+  formSent          Boolean          @default(false)
+  formFilled        Boolean          @default(false)
+  responseSheet     String?
+  followup          String?
+  quotationStatus   QuotationStatus  @default(PENDING)
+  remark            String?
+  dealWon           Boolean          @default(false)
+  probableCustomer  Boolean          @default(false)
+  status            LeadStatus       @default(NEW)
+  review            String?
+  callFollowup      DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  activityLogs      ActivityLog[]
+
+  @@map("leads")
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  leadId    String
+  userId    String
+  action    String
+  details   Json?
+  timestamp DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("activity_logs")
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String   @default("Ananka Fasteners")
+  logo        String?
+  primaryColor String  @default("#4682B4")
+  accentColor String   @default("#FFD700")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("company")
+}
