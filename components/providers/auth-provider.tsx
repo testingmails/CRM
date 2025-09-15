@@ -42,18 +42,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
+    console.log('Attempting login with:', email);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
 
+    console.log('Login response status:', response.status);
+    
     if (!response.ok) {
       const error = await response.json();
+      console.error('Login error:', error);
       throw new Error(error.error || 'Login failed');
     }
 
     const data = await response.json();
+    console.log('Login successful:', data.user);
     
     setToken(data.token);
     setUser(data.user);

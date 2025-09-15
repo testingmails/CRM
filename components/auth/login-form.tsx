@@ -54,6 +54,7 @@ export function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
               />
             </div>
             <div className="space-y-2">
@@ -65,6 +66,7 @@ export function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
               />
             </div>
             <Button 
@@ -76,7 +78,10 @@ export function LoginForm() {
             </Button>
           </form>
           <div className="mt-6 text-center text-sm text-gray-600">
-            Demo credentials: admin@ananka.com / password123
+            <div className="space-y-1">
+              <div><strong>Demo Admin:</strong> admin@ananka.com / password123</div>
+              <div><strong>Demo Sales:</strong> sales@ananka.com / password123</div>
+            </div>
           </div>
         </CardContent>
       </Card>

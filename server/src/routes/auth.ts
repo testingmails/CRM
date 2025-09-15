@@ -22,13 +22,17 @@ const registerSchema = z.object({
 // Login
 router.post('/login', async (req, res) => {
   try {
+    console.log('Login attempt:', req.body);
     const { email, password } = loginSchema.parse(req.body);
 
     const user = await prisma.user.findUnique({
       where: { email }
     });
 
+    console.log('User found:', user ? 'Yes' : 'No');
+    
     if (!user || !await bcrypt.compare(password, user.passwordHash)) {
+      console.log('Invalid credentials for:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
@@ -38,6 +42,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
+    console.log('Login successful for:', email);
     res.json({
       token,
       user: {
@@ -49,7 +54,11 @@ router.post('/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(400).json({ error: 'Invalid request data' });
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: 'Invalid request data', details: error.errors });
+    } else {
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
 });
 
