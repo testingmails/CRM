@@ -9,11 +9,11 @@
     "build": "next build && cd server && npm run build",
     "start": "concurrently \"next start\" \"cd server && npm start\"",
     "lint": "next lint",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset",
-    "setup": "npm install && cd server && npm install && npm run db:generate"
+    "db:generate": "dotenv -e .env -- prisma generate",
+    "db:push": "dotenv -e .env -- prisma db push",
+    "db:migrate": "dotenv -e .env -- prisma migrate dev",
+    "db:reset": "dotenv -e .env -- prisma migrate reset",
+    "setup": "npm install && cd server && npm install && npm add dotenv-cli --save-dev && npm run db:generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

@@ -21,7 +21,10 @@ services:
 
   # Application (Frontend + Backend)
   app:
-    build: .
+    build:
+      context: .
+      args:
+        DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/ananka_crm"
     restart: unless-stopped
     environment:
       DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/ananka_crm"
